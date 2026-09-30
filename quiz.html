@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ENTRE TELAS — Quiz</title>
+<meta name="description" content="Quiz escolar sobre o impacto do uso de telas na saúde física e mental.">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+:root{
+  --bg:#090909; --panel:#121212; --text:#f1eee8; --muted:#aaa39a;
+  --line:#302e2b; --accent:#d8c7a4; --danger:#b96a63;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:radial-gradient(circle at 50% 0%,#24211d 0,#0b0b0b 38%,#050505 100%);
+  color:var(--text);font-family:Inter,Arial,sans-serif;min-height:100vh;
+}
+body:before{
+  content:"";position:fixed;inset:0;pointer-events:none;opacity:.07;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.7'/%3E%3C/svg%3E");
+}
+header{
+  min-height:48vh;display:flex;align-items:center;justify-content:center;text-align:center;
+  padding:70px 20px 55px;border-bottom:1px solid var(--line);position:relative;overflow:hidden;
+}
+header:after{
+  content:"";position:absolute;width:650px;height:260px;bottom:-180px;
+  background:#d8c7a4;filter:blur(100px);opacity:.10;
+}
+.kicker{letter-spacing:.34em;text-transform:uppercase;font-size:11px;color:var(--accent);margin-bottom:18px}
+h1{
+  font-family:"Cormorant Garamond",serif;font-size:clamp(64px,13vw,150px);
+  line-height:.75;margin:0;font-weight:500;letter-spacing:-.045em;
+}
+.subtitle{font-family:"Cormorant Garamond",serif;font-size:clamp(21px,3vw,31px);color:#d2cec6;margin:32px 0 14px}
+.desc{max-width:650px;margin:auto;color:var(--muted);line-height:1.7;font-size:14px}
+main{max-width:920px;margin:0 auto;padding:55px 20px 80px}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;color:var(--muted);font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+.progress{height:2px;background:#242321;margin-bottom:42px}
+.progress span{display:block;height:100%;background:var(--accent);width:0;transition:.35s}
+.question-card{display:none;animation:fade .45s ease}
+.question-card.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.number{font-family:"Cormorant Garamond",serif;font-size:18px;color:var(--accent)}
+.question{font-family:"Cormorant Garamond",serif;font-size:clamp(31px,5vw,48px);line-height:1.05;font-weight:500;margin:10px 0 35px}
+.options{display:grid;gap:12px}
+.option{
+  width:100%;text-align:left;padding:19px 20px;background:rgba(255,255,255,.025);
+  border:1px solid var(--line);color:var(--text);cursor:pointer;font:500 14px Inter;
+  transition:.2s;display:flex;gap:15px;align-items:flex-start
+}
+.option:hover{border-color:#77716a;background:rgba(255,255,255,.06)}
+.option.selected{border-color:var(--accent);background:rgba(216,199,164,.10)}
+.letter{color:var(--accent);font-weight:700;min-width:22px}
+.feedback{margin-top:20px;padding:17px 18px;border-left:2px solid var(--accent);background:#111;color:#c9c4bc;line-height:1.6;font-size:13px;display:none}
+.feedback.show{display:block}
+.nav{display:flex;justify-content:space-between;gap:12px;margin-top:30px}
+button.control{
+  border:1px solid var(--line);background:transparent;color:var(--text);padding:13px 22px;
+  cursor:pointer;font:600 12px Inter;text-transform:uppercase;letter-spacing:.12em
+}
+button.control.primary{background:var(--accent);border-color:var(--accent);color:#111}
+button.control:disabled{opacity:.3;cursor:not-allowed}
+.result{
+  display:none;text-align:center;padding:30px 0
+}
+.result.show{display:block}
+.score{font-family:"Cormorant Garamond",serif;font-size:100px;line-height:1;color:var(--accent)}
+.result h2{font-family:"Cormorant Garamond",serif;font-size:42px;font-weight:500;margin:8px 0 15px}
+.result p{max-width:610px;margin:0 auto 30px;color:var(--muted);line-height:1.7}
+.meter{height:5px;background:#252421;max-width:500px;margin:20px auto 35px}
+.meter span{display:block;height:100%;width:0;background:var(--accent);transition:1s}
+footer{text-align:center;padding:30px;color:#68635d;border-top:1px solid var(--line);font-size:11px;letter-spacing:.08em}
+@media(max-width:600px){header{min-height:42vh}.topbar{font-size:10px}.question{font-size:35px}.option{padding:17px}}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <div class="kicker">Projeto Telas · Quiz</div>
+    <h1>ENTRE<br>TELAS</h1>
+    <div class="subtitle">Quando a tela deixa de ser ferramenta?</div>
+    <div class="desc">Um quiz sobre como o uso de dispositivos digitais pode atravessar o sono, o corpo, a atenção e a saúde mental.</div>
+  </div>
+</header>
+
+<main>
+  <div id="quiz">
+    <div class="topbar"><span id="counter">Pergunta 1 de 12</span><span id="points">0 pontos</span></div>
+    <div class="progress"><span id="progress"></span></div>
+    <div id="questions"></div>
+    <div class="nav">
+      <button class="control" id="prev" disabled>← Voltar</button>
+      <button class="control primary" id="next">Responder →</button>
+    </div>
+  </div>
+
+  <section class="result" id="result">
+    <div class="kicker">Resultado</div>
+    <div class="score" id="score">0/12</div>
+    <div class="meter"><span id="meter"></span></div>
+    <h2 id="resultTitle"></h2>
+    <p id="resultText"></p>
+    <button class="control primary" onclick="restart()">Refazer quiz</button>
+  </section>
+</main>
+
+<footer>ENTRE TELAS · UM PROJETO SOBRE O QUE ACONTECE FORA DA TELA.</footer>
+
+<script>
+const questions = [
+{
+q:"Uma estudante passa cerca de 7 horas por dia no celular e costuma usar o aparelho até poucos minutos antes de dormir. Qual mecanismo ajuda a explicar uma possível dificuldade para iniciar o sono?",
+a:["A luz e a atividade estimulante podem interferir nos sinais que regulam o ciclo sono–vigília.","O celular aumenta diretamente a temperatura corporal durante toda a noite.","A tela impede fisicamente que os olhos entrem em repouso.","O cérebro deixa de produzir melatonina para sempre após exposição noturna."],
+c:0,e:"A exposição à luz, especialmente à noite, e o conteúdo estimulante podem atrasar o início do sono e atrapalhar o ritmo circadiano."
+},
+{
+q:"Qual situação representa melhor um problema de ergonomia relacionado ao uso prolongado de telas?",
+a:["Manter o pescoço inclinado para baixo por longos períodos, com postura pouco variada.","Usar uma tela em um ambiente silencioso.","Diminuir o brilho da tela em um ambiente escuro.","Alternar entre aplicativos durante uma atividade."],
+c:0,e:"Posturas mantidas por muito tempo e pouca variação de movimento podem aumentar desconforto e sobrecarga muscular, especialmente em pescoço e ombros."
+},
+{
+q:"Uma pessoa relata dor de cabeça e olhos cansados depois de várias horas estudando no computador. Qual medida é mais coerente com a prevenção da fadiga visual?",
+a:["Fazer pausas periódicas, variar o foco visual e ajustar distância, iluminação e posição da tela.","Aumentar o brilho da tela ao máximo para forçar os olhos a se adaptar.","Evitar piscar para manter os olhos concentrados.","Aproximar o rosto da tela para enxergar melhor."],
+c:0,e:"Pausas e ajustes ergonômicos ajudam a reduzir esforço visual. Piscar também é importante para manter a superfície ocular hidratada."
+},
+{
+q:"Por que notificações constantes podem prejudicar uma atividade que exige concentração, mesmo quando a pessoa não responde a todas elas?",
+a:["Porque cada interrupção pode deslocar a atenção e exigir esforço para retomar o foco.","Porque qualquer notificação causa perda permanente de memória.","Porque o cérebro só consegue prestar atenção em uma informação por dia.","Porque notificações diminuem obrigatoriamente a inteligência."],
+c:0,e:"Mesmo uma interrupção breve pode fragmentar a atenção. Retomar uma tarefa complexa pode exigir tempo e esforço cognitivo."
+},
+{
+q:"Uma adolescente percebe que fica mais ansiosa depois de passar muito tempo comparando sua aparência e rotina com publicações de outras pessoas. Qual interpretação é mais adequada?",
+a:["A comparação com conteúdos selecionados pode influenciar a percepção de si e o bem-estar, mas os efeitos variam entre pessoas.","Toda rede social causa transtorno de ansiedade.","A ansiedade nesse caso só pode ser causada por falta de exercício físico.","Se a publicação parece positiva, ela não pode produzir nenhum efeito negativo."],
+c:0,e:"Redes sociais mostram recortes selecionados da vida. Comparação social, contexto, frequência e características individuais podem influenciar os efeitos sobre o bem-estar."
+},
+{
+q:"Qual alternativa diferencia melhor uso intenso de tela e uso problemático?",
+a:["Uso intenso descreve quantidade/frequência; uso problemático envolve prejuízos ou dificuldade de controlar o comportamento.","São exatamente a mesma coisa em qualquer situação.","Uso problemático é definido apenas pelo número de horas.","Qualquer pessoa que use tela diariamente apresenta uso problemático."],
+c:0,e:"Tempo de uso é uma dimensão importante, mas não é o único critério. Prejuízos no sono, estudos, relações ou capacidade de controlar o uso também importam."
+},
+{
+q:"Durante uma refeição, uma pessoa alterna continuamente entre comida e vídeos curtos. Qual efeito é mais plausível do ponto de vista comportamental?",
+a:["A atenção dividida pode reduzir a percepção dos sinais internos de fome e saciedade em algumas situações.","Assistir a vídeos faz o metabolismo parar durante a refeição.","Vídeos sempre aumentam a fome independentemente do conteúdo.","O cérebro deixa de digerir alimentos quando recebe informação visual."],
+c:0,e:"A distração durante a refeição pode alterar a atenção aos sinais de fome e saciedade e também afetar a percepção da própria experiência alimentar."
+},
+{
+q:"Uma estudante usa o celular na cama por uma hora a mais do que planejava porque continua recebendo conteúdos novos. Qual fator pode contribuir para esse comportamento?",
+a:["Sistemas de recomendação e recompensas variáveis podem favorecer a permanência e dificultar a interrupção.","A tela possui uma força física que impede a pessoa de desligar o aparelho.","O celular reduz automaticamente a necessidade de dormir.","Qualquer conteúdo digital produz dependência química."],
+c:0,e:"Fluxos infinitos, recomendações personalizadas e recompensas imprevisíveis podem aumentar o engajamento. Isso não significa que todo uso seja dependência."
+},
+{
+q:"Qual mudança tende a ser mais realista para reduzir o impacto do celular sobre o sono?",
+a:["Criar um período sem tela antes de dormir e deixar o aparelho longe da cama, ajustando a rotina de forma gradual.","Dormir com o celular sob o travesseiro para reduzir a vontade de usá-lo.","Trocar vídeos por mensagens e manter o mesmo horário de uso.","Usar várias telas ao mesmo tempo para cansar mais os olhos."],
+c:0,e:"Reduzir estímulos antes de dormir e aumentar a distância física do aparelho pode facilitar uma rotina de sono mais consistente."
+},
+{
+q:"Uma pessoa usa tela por muitas horas, mas faz pausas, dorme bem, mantém atividade física e não percebe prejuízos no cotidiano. O que essa situação mostra?",
+a:["Que avaliar apenas o número de horas pode ser insuficiente para compreender os efeitos do uso de telas.","Que muitas horas de tela são sempre saudáveis.","Que pausas eliminam qualquer possível efeito negativo.","Que o tempo de tela nunca tem relação com saúde."],
+c:0,e:"Contexto, tipo de atividade, horário, postura, sono e impactos na vida diária ajudam a interpretar o uso de telas."
+},
+{
+q:"Qual combinação apresenta fatores que podem se relacionar ao impacto físico do uso prolongado de telas?",
+a:["Sedentarismo, postura mantida por longos períodos, pouca variação de movimento e fadiga visual.","Apenas a idade da pessoa.","Somente o tamanho do aparelho.","Cor do aplicativo, modelo do celular e número de seguidores."],
+c:0,e:"O comportamento associado ao uso — tempo sentado, postura, pausas e demanda visual — é mais relevante para esses efeitos físicos."
+},
+{
+q:"Duas pessoas passam o mesmo tempo no celular. Uma usa principalmente para conversar com amigos; outra passa horas acordada consumindo conteúdo e abandona atividades importantes. O que a comparação sugere?",
+a:["O contexto e as consequências do uso importam, e o mesmo tempo de tela pode ter significados diferentes.","O tempo é o único fator relevante, então os dois casos são equivalentes.","Conversar online nunca tem relação com bem-estar.","Consumir conteúdo é sempre pior do que conversar."],
+c:0,e:"Não existe uma interpretação completa baseada apenas no cronômetro. Finalidade, horário, controle e consequências do uso ajudam a entender a situação."
+}
+];
+
+let current=0, answers=Array(questions.length).fill(null), score=0;
+const qBox=document.getElementById("questions");
+
+function render(){
+  qBox.innerHTML=questions.map((x,i)=>`
+    <article class="question-card ${i===0?'active':''}" id="q${i}">
+      <div class="number">${String(i+1).padStart(2,'0')}</div>
+      <div class="question">${x.q}</div>
+      <div class="options">${x.a.map((op,j)=>`
+        <button class="option ${answers[i]===j?'selected':''}" onclick="choose(${i},${j})">
+          <span class="letter">${String.fromCharCode(65+j)}</span><span>${op}</span>
+        </button>`).join('')}</div>
+      <div class="feedback ${answers[i]!==null?'show':''}" id="feedback${i}">
+        ${answers[i]!==null ? x.e : ''}
+      </div>
+    </article>`).join('');
+  update();
+}
+function choose(i,j){
+  answers[i]=j;
+  document.querySelectorAll(`#q${i} .option`).forEach((b,k)=>b.classList.toggle('selected',k===j));
+  const f=document.getElementById(`feedback${i}`);
+  f.textContent=questions[i].e; f.classList.add('show');
+  update();
+}
+function update(){
+  document.querySelectorAll(".question-card").forEach((el,i)=>el.classList.toggle("active",i===current));
+  document.getElementById("counter").textContent=`Pergunta ${current+1} de ${questions.length}`;
+  score=answers.reduce((n,a,i)=>n+(a===questions[i].c?1:0),0);
+  document.getElementById("points").textContent=`${score} ${score===1?'ponto':'pontos'}`;
+  document.getElementById("progress").style.width=`${(current+1)/questions.length*100}%`;
+  document.getElementById("prev").disabled=current===0;
+  document.getElementById("next").textContent=current===questions.length-1?"Ver resultado →":"Responder →";
+}
+document.getElementById("prev").onclick=()=>{if(current>0){current--;update();window.scrollTo({top:document.querySelector("main").offsetTop-20,behavior:"smooth"})}};
+document.getElementById("next").onclick=()=>{
+  if(answers[current]===null){alert("Escolha uma alternativa antes de continuar.");return}
+  if(current<questions.length-1){current++;update();window.scrollTo({top:document.querySelector("main").offsetTop-20,behavior:"smooth"})}
+  else finish();
+};
+function finish(){
+  document.getElementById("quiz").style.display="none";
+  const r=document.getElementById("result");r.classList.add("show");
+  document.getElementById("score").textContent=`${score}/${questions.length}`;
+  document.getElementById("meter").style.width=`${score/questions.length*100}%`;
+  let title,text;
+  if(score>=10){title="Olhar crítico.";text="Você demonstrou uma boa compreensão das relações entre telas, comportamento, corpo, sono e saúde mental. O mais importante é perceber que o impacto depende do contexto — não apenas de um número no relógio."}
+  else if(score>=7){title="Você está no caminho.";text="Você reconhece boa parte dos efeitos do uso de telas, mas ainda há alguns detalhes para observar. Que tal rever as explicações das questões?"}
+  else {title="Hora de olhar além da tela.";text="O quiz mostrou alguns pontos que valem uma segunda olhada. Revise as explicações e tente novamente — a ideia não é decorar, mas entender."}
+  document.getElementById("resultTitle").textContent=title;
+  document.getElementById("resultText").textContent=text;
+  window.scrollTo({top:document.querySelector("main").offsetTop-20,behavior:"smooth"});
+}
+function restart(){current=0;answers.fill(null);score=0;document.getElementById("quiz").style.display="block";document.getElementById("result").classList.remove("show");render();window.scrollTo({top:0,behavior:"smooth"})}
+render();
+</script>
+</body>
+</html>
